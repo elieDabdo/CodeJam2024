@@ -1,0 +1,9 @@
+services:
+  mytrainer:
+    volumes:
+      - ./:/root/app
+    build: .
+    ports:
+      - "3000:3000"
+
+    command: bash -c "tail -f /dev/null"

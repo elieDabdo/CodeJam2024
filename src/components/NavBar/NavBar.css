@@ -1,0 +1,19 @@
+.navbar {
+    background: indigo;
+    color: purple;
+}
+
+.nav-main {
+    display: flex;
+    position: relative;
+    justify-content: space-between;    
+    align-items: center;
+    padding:0.4rem;
+    height: 60px;
+}
+
+.nav-main .name {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: magenta;
+}
