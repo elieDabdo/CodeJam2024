@@ -1,9 +1,21 @@
 import React, { useRef, useEffect } from "react";
 import { Pose } from "@mediapipe/pose/pose.js";
+import { Unity, useUnityContext } from "react-unity-webgl";
 
 const Playback = () => {
   const webcamVideoRef = useRef(null); // Ref for the webcam video element
   const webcamCanvasRef = useRef(null); // Ref for the canvas element
+
+  // Unity context setup
+  const { unityProvider, isLoaded, loadingProgression, sendMessage } =
+    useUnityContext({
+      loaderUrl: "unityBuild/Build/unityBuild.loader.js",
+      dataUrl: "unityBuild/Build/unityBuild.data",
+      frameworkUrl: "unityBuild/Build/unityBuild.framework.js",
+      codeUrl: "unityBuild/Build/build.wasm",
+    });
+
+  const loadingPercentage = Math.round(loadingProgression * 100);
 
   useEffect(() => {
     let webcamPose = null;
@@ -126,17 +138,12 @@ const Playback = () => {
     };
 
     const sendPoseToUnity = (poseLandmarks) => {
-      const unityInstance = window.unityInstance; // Access Unity instance
-      if (unityInstance) {
-        unityInstance.SendMessage(
-          "MessageHandler", // Unity GameObject name
-          "ReceivePoseData", // Unity method to call
-          JSON.stringify(poseLandmarks) // Convert landmarks to JSON string
-        );
-        console.log("Pose data sent to Unity:", poseLandmarks);
-      } else {
-        console.error("Unity instance not found");
-      }
+      sendMessage(
+        "MessageHandler", // Unity GameObject name
+        "ReceivePoseData", // Unity method to call
+        JSON.stringify(poseLandmarks) // Convert landmarks to JSON string
+      );
+      console.log("Pose data sent to Unity:", poseLandmarks);
     };
 
     initializePose();
@@ -148,7 +155,7 @@ const Playback = () => {
         webcamPose.close();
       }
     };
-  }, []);
+  }, [sendMessage]);
 
   return (
     <div style={{ display: "flex", width: "100%", height: "100vh" }}>
@@ -177,17 +184,50 @@ const Playback = () => {
         />
       </div>
 
-      {/* Unity Game iframe */}
-      <iframe
-        id="unity-iframe"
-        width="50%"
-        height="100%"
-        src="http://127.0.0.1:5500/index.html"
-        title="Game"
-        frameBorder="0"
-        allowFullScreen
-        style={{ zIndex: 0 }}
-      ></iframe>
+      {/* Unity Game */}
+      {/* Unity Game */}
+<div
+  style={{
+    width: "50%",
+    height: "100%",
+    position: "relative", // Ensure it respects its parent stacking context
+    zIndex: 2, // Higher z-index to bring it forward
+  }}
+>
+  {isLoaded === false && (
+    <div
+      className="loading-overlay"
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: 3, // Overlay above Unity game while loading
+        color: "white",
+      }}
+    >
+      <p>Loading... ({loadingPercentage}%)</p>
+    </div>
+  )}
+  <Unity
+    className="unity"
+    unityProvider={unityProvider}
+    style={{
+      width: "100%",
+      height: "100%",
+      position: "absolute", // Fill parent container
+      top: 0,
+      left: 0,
+      zIndex: 2, // Unity content in the foreground
+    }}
+  />
+</div>
+
     </div>
   );
 };

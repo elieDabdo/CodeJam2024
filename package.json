@@ -2,7 +2,6 @@
   "name": "my_trainer",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://elieDabdo.github.io/CodeJam2024",
   "dependencies": {
     "@mediapipe/camera_utils": "^0.3.1675466862",
     "@mediapipe/control_utils": "^0.6.1675466023",
@@ -23,6 +22,7 @@
     "react-router-dom": "^6.19.0",
     "react-scripts": "5.0.1",
     "react-tsparticles": "^2.12.2",
+    "react-unity-webgl": "^9.6.0",
     "sass": "^1.69.5",
     "styled-components": "^6.1.1",
     "typewriter-effect": "^2.21.0",
