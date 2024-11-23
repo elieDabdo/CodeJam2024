@@ -1,45 +1,29 @@
-import React, { useState, useEffect } from "react";
-import Preloader from "../src/components/Pre";
-import Navbar from "./components/Navbar";
-import Home from "./components/Home/Home";
-import Projects from "./components/Projects/Projects";
-import Footer from "./components/Footer";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate
-} from "react-router-dom";
-import ScrollToTop from "./components/ScrollToTop";
-import "./style.css";
-import "./App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Game from "./components/Game/Game"
-
+import React from "react";
+import { Unity, useUnityContext } from "react-unity-webgl";
 
 function App() {
-  const [load, upadateLoad] = useState(true);
+  const { unityProvider, isLoaded, loadingProgression } = useUnityContext({
+    loaderUrl: "Build/unityBuild.loader.js",
+    dataUrl: "Build/unityBuild.data",
+    frameworkUrl: "Build/unityBuild.framework.js",
+    codeUrl: "Build/unityBuild.wasm",
+  });
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      upadateLoad(false);
-    }, 1200);
-
-    return () => clearTimeout(timer);
-  }, []);
+  // We'll round the loading progression to a whole number to represent the
+  // percentage of the Unity Application that has loaded.
+  const loadingPercentage = Math.round(loadingProgression * 100);
 
   return (
-    <Router>
-      <Preloader load={load} />
-      <div className="App" id={load ? "no-scroll" : "scroll"}>
-        <Routes>
-          <Route path="/CodeJam" element={<Home />} />
-          <Route path="/presets" element={<Projects />} />
-          <Route path="*" element={<Navigate to="/CodeJam"/>} />
-          <Route exact path= "/game" element={<Game/>}/>
-        </Routes>
-      </div>
-    </Router>
+    <div className="container">
+      {isLoaded === false && (
+        // We'll conditionally render the loading overlay if the Unity
+        // Application is not loaded.
+        <div className="loading-overlay">
+          <p>Loading... ({loadingPercentage}%)</p>
+        </div>
+      )}
+      <Unity className="unity" unityProvider={unityProvider} />
+    </div>
   );
 }
 
