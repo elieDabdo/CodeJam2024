@@ -1,5 +1,7 @@
-import React from "react";
-import { Unity, useUnityContext } from "react-unity-webgl";
+import React from 'react';
+import { useUnityContext } from 'react-unity-webgl';
+import { Unity } from 'react-unity-webgl';
+import Webcam from "react-webcam";
 
 function App() {
   const { unityProvider, isLoaded, loadingProgression } = useUnityContext({
@@ -9,20 +11,29 @@ function App() {
     codeUrl: "Build/unityBuild.wasm",
   });
 
-  // We'll round the loading progression to a whole number to represent the
-  // percentage of the Unity Application that has loaded.
+  // Round the loading progression to a whole number
   const loadingPercentage = Math.round(loadingProgression * 100);
 
   return (
     <div className="container">
-      {isLoaded === false && (
-        // We'll conditionally render the loading overlay if the Unity
-        // Application is not loaded.
+      {!isLoaded && (
         <div className="loading-overlay">
           <p>Loading... ({loadingPercentage}%)</p>
         </div>
       )}
-      <Unity className="unity" unityProvider={unityProvider} />
+
+      {/* Webcam Feed */}
+      <div className="webcam-container">
+        <Webcam
+          audio={false}
+          className="webcam"
+        />
+      </div>
+
+      {/* Unity WebGL Content */}
+      <div className="unity-container">
+        <Unity className="unity" unityProvider={unityProvider} />
+      </div>
     </div>
   );
 }
