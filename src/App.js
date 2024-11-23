@@ -16,6 +16,7 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Game from "./components/Game/Game";
 import RisingParticles from "./components/RisingParticles";
+import Button from "react-bootstrap/Button";
 
 function App() {
   const [load, upadateLoad] = useState(true);
