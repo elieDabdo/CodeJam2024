@@ -7,17 +7,17 @@ import Type from "./Type";
 import ScrollToTop from "../ScrollToTop";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
-import FileUpload from "../FileUpload"
-import yoga from "../../assets/yogagirlie.gif"
-import { useNavigate } from "react-router-dom"
+import FileUpload from "../FileUpload";
+import yoga from "../../assets/yogagirlie.gif";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
   const navigate = useNavigate();
 
   const handleFileChange = (file) => {
-    console.log('Selected file:', file);
+    console.log("Selected file:", file);
     const vidURL = URL.createObjectURL(file);
-    navigate('/game', {state: {video: vidURL}});
+    navigate("/game", { state: { video: vidURL } });
   };
 
   return (
@@ -25,7 +25,6 @@ function Home() {
       <Navbar />
       <ScrollToTop />
       <section>
-        
         <Container fluid className="home-section" id="home">
           <Particle />
           <Container className="home-content">
@@ -39,8 +38,8 @@ function Home() {
                 </h1> */}
 
                 <h1 className="heading-name">
-                  Welcome to 
-                  <strong className="main-name"> MyTrainer </strong>
+                  Welcome to
+                  <strong className="main-name"> Cambat </strong>
                 </h1>
 
                 <div style={{ padding: 50, textAlign: "left" }}>
@@ -58,13 +57,23 @@ function Home() {
               </Col>
             </Row>
             <Row>
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-              <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>Upload your MP4 video here to start training</h1>
-              <FileUpload onFileChange={handleFileChange} />
-            </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: "60vh",
+                }}
+              >
+                <h1 style={{ fontSize: "24px", marginBottom: "20px" }}>
+                  Upload your MP4 video here to start training
+                </h1>
+                <FileUpload onFileChange={handleFileChange} />
+              </div>
             </Row>
+          </Container>
         </Container>
-      </Container>
       </section>
       <Footer />
     </>
