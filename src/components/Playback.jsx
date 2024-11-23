@@ -91,8 +91,36 @@ const Playback = () => {
     };
 
     const drawPoseResults = (canvasCtx, results) => {
+      // Clear the previous frame
+      canvasCtx.clearRect(
+        0,
+        0,
+        webcamCanvasRef.current.width,
+        webcamCanvasRef.current.height
+      );
+    
+      // Draw vertical dividing lines
+      const canvasWidth = webcamCanvasRef.current.width;
+      const canvasHeight = webcamCanvasRef.current.height;
+    
+      // First line at 1/3 of the width
+      canvasCtx.beginPath();
+      canvasCtx.moveTo(canvasWidth / 3, 0);
+      canvasCtx.lineTo(canvasWidth / 3, canvasHeight);
+      canvasCtx.strokeStyle = "blue"; // Line color
+      canvasCtx.lineWidth = 2; // Line thickness
+      canvasCtx.stroke();
+    
+      // Second line at 2/3 of the width
+      canvasCtx.beginPath();
+      canvasCtx.moveTo((2 * canvasWidth) / 3, 0);
+      canvasCtx.lineTo((2 * canvasWidth) / 3, canvasHeight);
+      canvasCtx.strokeStyle = "blue";
+      canvasCtx.lineWidth = 2;
+      canvasCtx.stroke();
+    
+      // Draw the pose landmarks and connections if available
       if (results.poseLandmarks) {
-        // Draw lines between key pose landmarks (for skeleton)
         const connections = [
           [11, 13],
           [13, 15], // Left arm
@@ -109,32 +137,32 @@ const Playback = () => {
           [29, 31],
           [30, 32], // Right leg to feet
         ];
-
-        // Draw the lines
+    
+        // Draw the connections
         connections.forEach(([startIdx, endIdx]) => {
           const start = results.poseLandmarks[startIdx];
           const end = results.poseLandmarks[endIdx];
           canvasCtx.beginPath();
           canvasCtx.moveTo(
-            start.x * webcamCanvasRef.current.width,
-            start.y * webcamCanvasRef.current.height
+            start.x * canvasWidth,
+            start.y * canvasHeight
           );
           canvasCtx.lineTo(
-            end.x * webcamCanvasRef.current.width,
-            end.y * webcamCanvasRef.current.height
+            end.x * canvasWidth,
+            end.y * canvasHeight
           );
           canvasCtx.strokeStyle = "red";
           canvasCtx.lineWidth = 2;
           canvasCtx.stroke();
         });
-
+    
         // Draw landmarks
         results.poseLandmarks.forEach((landmark) => {
           const { x, y } = landmark;
           canvasCtx.beginPath();
           canvasCtx.arc(
-            x * webcamCanvasRef.current.width,
-            y * webcamCanvasRef.current.height,
+            x * canvasWidth,
+            y * canvasHeight,
             5,
             0,
             2 * Math.PI
@@ -144,6 +172,7 @@ const Playback = () => {
         });
       }
     };
+    
 
     const sendPoseToUnity = (poseLandmarks) => {
       sendMessage(
@@ -151,7 +180,7 @@ const Playback = () => {
         "ReceivePoseData", // Unity method to call
         JSON.stringify(poseLandmarks) // Convert landmarks to JSON string
       );
-      console.log("Pose data sent to Unity:", poseLandmarks);
+      // console.log("Pose data sent to Unity:", poseLandmarks);
     };
 
     initializePose();
