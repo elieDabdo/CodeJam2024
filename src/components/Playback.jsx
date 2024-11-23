@@ -1,176 +1,195 @@
-import React, { useRef, useEffect } from 'react';
-// import '@mediapipe/control_utils/control_utils.css';
-import { Pose } from '@mediapipe/pose/pose.js';
-import VideoPlayer from './VideoPlayer';
-import { onWebcamPose, onTrainingPose } from '../visualization.js'
+import React, { useRef, useEffect } from "react";
+import { Pose } from "@mediapipe/pose/pose.js";
 
-// async function importStylesheet() {
-//     return new Promise((resolve, reject) => {
-//       const link = document.createElement('link');
-//       link.href = '@mediapipe/control_utils/control_utils.css';
-//       link.rel = 'stylesheet';
-//       link.onload = () => resolve(link);
-//       link.onerror = importStylesheet;
-  
-//       document.head.appendChild(link);
-//     });
-//   }
+const Playback = () => {
+  const webcamVideoRef = useRef(null); // Ref for the webcam video element
+  const webcamCanvasRef = useRef(null); // Ref for the canvas element
 
-async function importPose() {
-    while (!Pose) {
-        try {
-            // Attempt to import the Pose class
-            ({ Pose } = await import('@mediapipe/pose/pose.js'));
-        } catch (error) {
-            console.error('Error importing Pose.js:', error);
-            await new Promise(resolve => setTimeout(resolve, 200)); // Wait for 1 second before retrying
-        }
-    }
-}
-  
-// Call the function to start the import and retry process for the stylesheet
-// await importStylesheet();
-await importPose();
+  useEffect(() => {
+    let webcamPose = null;
 
-// CREATE POSE DETECTOR OBJECTS
-let initialized = false;
-const wait = () => new Promise(resolve => setTimeout(resolve, 1000));
+    const initializePose = async () => {
+      try {
+        webcamPose = new Pose({
+          locateFile: (file) => `${process.env.PUBLIC_URL}/pose/${file}`,
+        });
 
-let trainingPose;
-let webcamPose;
+        // Set Mediapipe Pose options
+        webcamPose.setOptions({
+          selfieMode: true,
+          upperBodyOnly: false,
+          smoothLandmarks: true,
+          minDetectionConfidence: 0.5,
+          minTrackingConfidence: 0.5,
+          modelComplexity: 1,
+        });
 
-//SET OPTIONS
-const poseOptions = {
-    selfieMode: true,
-    upperBodyOnly: false,
-    smoothLandmarks: true,
-    minDetectionConfidence: 0.5,
-    minTrackingConfidence: 0.5,
-    runningMode: "VIDEO",
-    modelSelection: 0,
-    modelComplexity: 0
-}
+        // Set the results callback
+        webcamPose.onResults((results) => {
+          const canvasCtx = webcamCanvasRef.current.getContext("2d");
+          if (canvasCtx) {
+            // Clear the previous frame
+            canvasCtx.clearRect(
+              0,
+              0,
+              webcamCanvasRef.current.width,
+              webcamCanvasRef.current.height
+            );
 
-const initialize = async ({onlyTraining, onlyWebcam}) => {
-    try {
-        if (!onlyWebcam) {
-            trainingPose = await new Pose({
-                locateFile: (file) => `${process.env.PUBLIC_URL}/pose/${file}`
-                });
-        }
-        if (!onlyTraining) {
-            webcamPose = await new Pose({
-                locateFile: (file) => `${process.env.PUBLIC_URL}/pose/${file}`
-                });
-        }
-        webcamPose.setOptions(poseOptions);
-        poseOptions.selfieMode = false;
-        trainingPose.setOptions(poseOptions);
-        return true;
-    } catch {
-        console.log("Failed model instantiation.")
-        return false;
-    }
-}
+            // Draw the results (landmarks, skeleton, etc.)
+            drawPoseResults(canvasCtx, results);
+          }
 
-while (!initialized) {
-    await initialize({onlyTraining:false, onlyWebcam:false}).then((success) => {
-        initialized = success;
-    })
-    await wait()
-}
+          // Send pose data to Unity
+          if (results.poseLandmarks) {
+            sendPoseToUnity(results.poseLandmarks);
+          }
+        });
+      } catch (error) {
+        console.error("Pose initialization failed:", error);
+      }
+    };
 
-const maximized_detection_frame_rate = 60;
-const minimized_detection_frame_rate = 60;
+    const startWebcam = async () => {
+      const video = webcamVideoRef.current;
+      video.autoplay = true;
 
-let webcamReceivedResults = true;
-let trainingReceivedResults = true;
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
 
-await wait();
-  
-function Playback({ video_url, user_params }) {
-    const webcamCanvasRef = useRef(null);
-    const trainingCanvasRef = useRef(null);
+        video.onloadedmetadata = () => {
+          video.play();
 
-    // DEFINE POSE DETECTION CALLBACK FUNCTION
-    useEffect(() => {
-        let initOnResults = false;
-        while (!initOnResults) {
-            try {
-                trainingPose.onResults((results) => onTrainingPose(results, webcamCanvasRef.current.getContext('2d'), trainingCanvasRef.current.getContext('2d'), user_params));
-                webcamPose.onResults((results) => onWebcamPose(results, webcamCanvasRef.current.getContext('2d'), trainingCanvasRef.current.getContext('2d'), user_params));
-                initOnResults = true;
-            } catch {
-                console.log("Failed onResults setup.")
+          // Process webcam frames
+          const processFrame = async () => {
+            if (webcamPose) {
+              await webcamPose.send({ image: video });
             }
-        }
-    })
-    const minimizedProps = {className:"min-player", height:'30%', width:'500vh'};
-    const maximizedProps = {className:"max-player", height:'100vh', width:'100%'};
-    
-    const trainingVideoDetectionRate = user_params.training_video_maximized ? maximized_detection_frame_rate : minimized_detection_frame_rate;
-    const webcamVideoDetectionRate = user_params.training_video_maximized ? minimized_detection_frame_rate : maximized_detection_frame_rate;
+            requestAnimationFrame(processFrame);
+          };
 
-    const trainingVideoProps = user_params.training_video_maximized ? maximizedProps : minimizedProps;
-    const webcamPlayerProps = user_params.training_video_maximized ? minimizedProps : maximizedProps;
+          processFrame();
+        };
+      } catch (error) {
+        console.error("Webcam access failed:", error);
+      }
+    };
 
-    // DEFINE FRAME CALLBACKS
-    const handleTrainingVideoFrame = async (video) => {
-        try {
-            if (trainingReceivedResults) {
-                trainingReceivedResults = false;
-                await trainingPose.send({image: video});
-                trainingReceivedResults = true;
-              }
-        } catch {
-            console.log("Failed inference on training video. Waiting and trying again.") 
-            initialize({onlyTraining:true, onlyWebcam:false});
-            await wait();
-        }
-        //run media pipe pose model on frame and get landmark information
-    }
-    
-    // DEFINE FRAME CALLBACKS
-    const handleWebcamVideoFrame = async (video) => {
-        try {
-            if (webcamReceivedResults) {
-                webcamReceivedResults = false;
-                await webcamPose.send({image: video});
-                webcamReceivedResults = true;
-              }
-        } catch {
-            console.log("Failed inference on webcam video. Waiting and trying again.") 
-            initialize({onlyTraining:false, onlyWebcam:true});
-            await wait();
-        }
-        //run media pipe pose model on frame and get landmark information
-    }
-    
-    return (
-      <div>
-        <div className='videos'>
-            <canvas ref={trainingCanvasRef} className={trainingVideoProps.className} style={{zIndex: 11, pointerEvents: 'none'}}></canvas>
-            <canvas ref={webcamCanvasRef} className={webcamPlayerProps.className} style={{zIndex: 11, pointerEvents: 'none'}}></canvas>
-            {/* TRAINING VIDEO */}
-            <VideoPlayer
-                video_url={video_url}
-                props={trainingVideoProps}
-                onFrame={handleTrainingVideoFrame}
-                detection_frame_rate={trainingVideoDetectionRate}
-                canvasRef={trainingCanvasRef}
-            />
-        
-            {/* WEBCAM INPUT */}
-            <VideoPlayer
-                webcam={true}
-                props={webcamPlayerProps}
-                onFrame={handleWebcamVideoFrame}
-                detection_frame_rate={webcamVideoDetectionRate}
-                canvasRef={webcamCanvasRef}
-            />
-        </div>
+    const drawPoseResults = (canvasCtx, results) => {
+      if (results.poseLandmarks) {
+        // Draw lines between key pose landmarks (for skeleton)
+        const connections = [
+          [11, 13], [13, 15], // Left arm
+          [12, 14], [14, 16], // Right arm
+          [11, 12], // Shoulders
+          [23, 25], [25, 27], // Left leg
+          [24, 26], [26, 28], // Right leg
+          [23, 24], // Hips
+          [27, 29], [28, 30], // Left leg to feet
+          [29, 31], [30, 32], // Right leg to feet
+        ];
+
+        // Draw the lines
+        connections.forEach(([startIdx, endIdx]) => {
+          const start = results.poseLandmarks[startIdx];
+          const end = results.poseLandmarks[endIdx];
+          canvasCtx.beginPath();
+          canvasCtx.moveTo(
+            start.x * webcamCanvasRef.current.width,
+            start.y * webcamCanvasRef.current.height
+          );
+          canvasCtx.lineTo(
+            end.x * webcamCanvasRef.current.width,
+            end.y * webcamCanvasRef.current.height
+          );
+          canvasCtx.strokeStyle = "red";
+          canvasCtx.lineWidth = 2;
+          canvasCtx.stroke();
+        });
+
+        // Draw landmarks
+        results.poseLandmarks.forEach((landmark) => {
+          const { x, y } = landmark;
+          canvasCtx.beginPath();
+          canvasCtx.arc(
+            x * webcamCanvasRef.current.width,
+            y * webcamCanvasRef.current.height,
+            5,
+            0,
+            2 * Math.PI
+          );
+          canvasCtx.fillStyle = "red";
+          canvasCtx.fill();
+        });
+      }
+    };
+
+    const sendPoseToUnity = (poseLandmarks) => {
+      const unityInstance = window.unityInstance; // Access Unity instance
+      if (unityInstance) {
+        unityInstance.SendMessage(
+          "MessageHandler", // Unity GameObject name
+          "ReceivePoseData", // Unity method to call
+          JSON.stringify(poseLandmarks) // Convert landmarks to JSON string
+        );
+        console.log("Pose data sent to Unity:", poseLandmarks);
+      } else {
+        console.error("Unity instance not found");
+      }
+    };
+
+    initializePose();
+    startWebcam();
+
+    return () => {
+      // Clean up resources
+      if (webcamPose) {
+        webcamPose.close();
+      }
+    };
+  }, []);
+
+  return (
+    <div style={{ display: "flex", width: "100%", height: "100vh" }}>
+      {/* Webcam Feed and Pose Overlay */}
+      <div style={{ position: "relative", width: "50%", height: "100%" }}>
+        <video
+          ref={webcamVideoRef}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            transform: "scaleX(-1)", // Flip horizontally
+          }}
+        />
+        <canvas
+          ref={webcamCanvasRef}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 1,
+            pointerEvents: "none",
+          }}
+        />
       </div>
-    );
-  }
-  
-  export default Playback;
+
+      {/* Unity Game iframe */}
+      <iframe
+        id="unity-iframe"
+        width="50%"
+        height="100%"
+        src="http://127.0.0.1:5500/index.html"
+        title="Game"
+        frameBorder="0"
+        allowFullScreen
+        style={{ zIndex: 0 }}
+      ></iframe>
+    </div>
+  );
+};
+
+export default Playback;
