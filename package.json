@@ -23,6 +23,7 @@
     "react-router-dom": "^6.19.0",
     "react-scripts": "5.0.1",
     "react-tsparticles": "^2.12.2",
+    "react-unity-webgl": "^9.6.0",
     "sass": "^1.69.5",
     "styled-components": "^6.1.1",
     "typewriter-effect": "^2.21.0",
