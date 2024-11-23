@@ -2,11 +2,11 @@ import React, { useRef, useState } from "react";
 import Webcam from "react-webcam";
 import Button from "react-bootstrap/Button";
 
-function CapturePhoto({ onCapture }) {
+function CapturePhoto() {
   const webcamRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
 
-  // Capture the photo
+  // Capture photo from webcam
   const captureImage = () => {
     if (webcamRef.current) {
       const imageSrc = webcamRef.current.getScreenshot();
@@ -14,9 +14,23 @@ function CapturePhoto({ onCapture }) {
     }
   };
 
+  // Handle "Choose Photo" button
+  const handleChoosePhoto = () => {
+    if (capturedImage) {
+      console.log("Captured Photo:", capturedImage);
+    } else {
+      console.log("No photo captured yet.");
+    }
+  };
+
   return (
     <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "10px",
+      }}
     >
       {!capturedImage && (
         <>
@@ -24,9 +38,9 @@ function CapturePhoto({ onCapture }) {
             style={{
               position: "relative",
               width: "500px",
-              height: "500px", // Make it a square
-              overflow: "hidden", // Ensures any overflow is clipped
-              borderRadius: "10px", // Optional: Adds rounded corners
+              height: "500px", // Make it square
+              overflow: "hidden",
+              borderRadius: "10px",
             }}
           >
             <Webcam
@@ -43,16 +57,12 @@ function CapturePhoto({ onCapture }) {
                 left: 0,
                 width: "100%",
                 height: "100%",
-                objectFit: "cover", // Ensures the webcam feed covers the square area
-                transform: "scaleX(-1)", // Mirrors the webcam horizontally
+                objectFit: "cover",
+                transform: "scaleX(-1)", // Mirror the webcam
               }}
             />
           </div>
-          <Button
-            variant="primary"
-            onClick={captureImage}
-            style={{ marginTop: "10px" }}
-          >
+          <Button variant="primary" onClick={captureImage}>
             Capture Photo
           </Button>
         </>
@@ -60,20 +70,30 @@ function CapturePhoto({ onCapture }) {
 
       {capturedImage && (
         <>
-          <h4 style={{ color: "white" }}>Captured Image:</h4>
+          <h4>Selected Image:</h4>
           <img
             src={capturedImage}
-            alt="Captured"
+            alt="Selected"
             style={{
               width: "100%",
               maxWidth: "500px",
               marginBottom: "10px",
-              transform: "scaleX(-1)", // Mirrors the captured image
+              transform: "scaleX(-1)", // Mirror the captured image
             }}
           />
-          <Button variant="secondary" onClick={() => setCapturedImage(null)}>
-            Retake Photo
-          </Button>
+          <div
+            style={{ display: "flex", justifyContent: "center", gap: "10px" }}
+          >
+            <Button variant="secondary" onClick={() => setCapturedImage(null)}>
+              Retake Photo
+            </Button>
+            <Button
+              variant="success"
+              onClick={handleChoosePhoto} // Print the photo to the console
+            >
+              Choose Photo
+            </Button>
+          </div>
         </>
       )}
     </div>
