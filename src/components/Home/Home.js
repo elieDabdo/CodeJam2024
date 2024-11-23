@@ -8,7 +8,7 @@ import ScrollToTop from "../ScrollToTop";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 import FileUpload from "../FileUpload";
-import yoga from "../../assets/yogagirlie.gif";
+import gameControl from "../../assets/game-control.gif";
 import { useNavigate } from "react-router-dom";
 
 function Home() {
@@ -49,7 +49,7 @@ function Home() {
 
               <Col md={5} style={{ paddingBottom: 20 }}>
                 <img
-                  src={yoga}
+                  src={gameControl}
                   alt="home pic"
                   className="img-fluid"
                   style={{ maxHeight: "450px" }}
