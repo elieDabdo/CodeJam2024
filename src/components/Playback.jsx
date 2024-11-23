@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { Pose } from '@mediapipe/pose/pose.js';
+import React, { useRef, useEffect } from "react";
+import { Pose } from "@mediapipe/pose/pose.js";
 
 const Playback = () => {
   const webcamVideoRef = useRef(null); // Ref for the webcam video element
@@ -26,17 +26,27 @@ const Playback = () => {
 
         // Set the results callback
         webcamPose.onResults((results) => {
-          const canvasCtx = webcamCanvasRef.current.getContext('2d');
+          const canvasCtx = webcamCanvasRef.current.getContext("2d");
           if (canvasCtx) {
             // Clear the previous frame
-            canvasCtx.clearRect(0, 0, webcamCanvasRef.current.width, webcamCanvasRef.current.height);
+            canvasCtx.clearRect(
+              0,
+              0,
+              webcamCanvasRef.current.width,
+              webcamCanvasRef.current.height
+            );
 
             // Draw the results (landmarks, skeleton, etc.)
             drawPoseResults(canvasCtx, results);
           }
+
+          // Send pose data to Unity
+          if (results.poseLandmarks) {
+            sendPoseToUnity(results.poseLandmarks);
+          }
         });
       } catch (error) {
-        console.error('Pose initialization failed:', error);
+        console.error("Pose initialization failed:", error);
       }
     };
 
@@ -62,12 +72,11 @@ const Playback = () => {
           processFrame();
         };
       } catch (error) {
-        console.error('Webcam access failed:', error);
+        console.error("Webcam access failed:", error);
       }
     };
 
     const drawPoseResults = (canvasCtx, results) => {
-      // Draw pose landmarks and connections
       if (results.poseLandmarks) {
         // Draw lines between key pose landmarks (for skeleton)
         const connections = [
@@ -86,9 +95,15 @@ const Playback = () => {
           const start = results.poseLandmarks[startIdx];
           const end = results.poseLandmarks[endIdx];
           canvasCtx.beginPath();
-          canvasCtx.moveTo(start.x * webcamCanvasRef.current.width, start.y * webcamCanvasRef.current.height);
-          canvasCtx.lineTo(end.x * webcamCanvasRef.current.width, end.y * webcamCanvasRef.current.height);
-          canvasCtx.strokeStyle = 'red'; // Line color changed to red
+          canvasCtx.moveTo(
+            start.x * webcamCanvasRef.current.width,
+            start.y * webcamCanvasRef.current.height
+          );
+          canvasCtx.lineTo(
+            end.x * webcamCanvasRef.current.width,
+            end.y * webcamCanvasRef.current.height
+          );
+          canvasCtx.strokeStyle = "red";
           canvasCtx.lineWidth = 2;
           canvasCtx.stroke();
         });
@@ -97,10 +112,30 @@ const Playback = () => {
         results.poseLandmarks.forEach((landmark) => {
           const { x, y } = landmark;
           canvasCtx.beginPath();
-          canvasCtx.arc(x * webcamCanvasRef.current.width, y * webcamCanvasRef.current.height, 5, 0, 2 * Math.PI);
-          canvasCtx.fillStyle = 'red'; // Landmark color remains red
+          canvasCtx.arc(
+            x * webcamCanvasRef.current.width,
+            y * webcamCanvasRef.current.height,
+            5,
+            0,
+            2 * Math.PI
+          );
+          canvasCtx.fillStyle = "red";
           canvasCtx.fill();
         });
+      }
+    };
+
+    const sendPoseToUnity = (poseLandmarks) => {
+      const unityInstance = window.unityInstance; // Access Unity instance
+      if (unityInstance) {
+        unityInstance.SendMessage(
+          "MessageHandler", // Unity GameObject name
+          "ReceivePoseData", // Unity method to call
+          JSON.stringify(poseLandmarks) // Convert landmarks to JSON string
+        );
+        console.log("Pose data sent to Unity:", poseLandmarks);
+      } else {
+        console.error("Unity instance not found");
       }
     };
 
@@ -116,42 +151,40 @@ const Playback = () => {
   }, []);
 
   return (
-    <div style={{ display: 'flex', width: '100%', height: '100vh' }}>
+    <div style={{ display: "flex", width: "100%", height: "100vh" }}>
       {/* Webcam Feed and Pose Overlay */}
-      <div style={{ position: 'relative', width: '50%', height: '100%' }}>
+      <div style={{ position: "relative", width: "50%", height: "100%" }}>
         <video
-          ref={webcamVideoRef} // Using video ref
+          ref={webcamVideoRef}
           style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover', // Ensure the video fills the space
-            transform: 'scaleX(-1)', // Flip the webcam feed horizontally
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            transform: "scaleX(-1)", // Flip horizontally
           }}
         />
-
-        {/* Canvas for pose landmarks */}
         <canvas
-          ref={webcamCanvasRef} // Using canvas ref
+          ref={webcamCanvasRef}
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
-            width: '100%',
-            height: '100%',
+            width: "100%",
+            height: "100%",
             zIndex: 1,
-            pointerEvents: 'none',
+            pointerEvents: "none",
           }}
         />
       </div>
 
-      {/* Game iframe */}
+      {/* Unity Game iframe */}
       <iframe
+        id="unity-iframe"
         width="50%"
         height="100%"
-        src="https://humbertodias.github.io/unity-small-fighter/"
+        src="http://127.0.0.1:5500/index.html"
         title="Game"
         frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
         style={{ zIndex: 0 }}
       ></iframe>
