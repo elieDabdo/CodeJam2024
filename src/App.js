@@ -8,14 +8,14 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
-  Navigate
+  Navigate,
 } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import "./style.css";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Game from "./components/Game/Game"
-
+import Game from "./components/Game/Game";
+import RisingParticles from "./components/RisingParticles";
 
 function App() {
   const [load, upadateLoad] = useState(true);
@@ -32,11 +32,12 @@ function App() {
     <Router>
       <Preloader load={load} />
       <div className="App" id={load ? "no-scroll" : "scroll"}>
+        <RisingParticles />
         <Routes>
           <Route path="/CodeJam" element={<Home />} />
           <Route path="/presets" element={<Projects />} />
-          <Route path="*" element={<Navigate to="/CodeJam"/>} />
-          <Route exact path= "/game" element={<Game/>}/>
+          <Route path="*" element={<Navigate to="/CodeJam" />} />
+          <Route exact path="/game" element={<Game />} />
         </Routes>
       </div>
     </Router>
