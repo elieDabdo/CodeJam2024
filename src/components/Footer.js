@@ -14,8 +14,8 @@ function Footer() {
     <Container fluid className="footer">
       <Row>
         <h3>
-          Designed and Developed by Elie Abdo, Rudi Fischolf and Danielle
-          Wahrhaftig, Copyright © {year}
+          Designed and Developed by Elie Abdo, Rudi Kischer and Danielle
+          Wahrhaftig. Copyright © {year}
         </h3>
       </Row>
     </Container>
