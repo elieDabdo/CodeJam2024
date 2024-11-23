@@ -1,0 +1,69 @@
+.glitch-button {
+  background-color: white;
+  color: purple;
+  border: 2px solid purple;
+  padding: 15px 30px; /* Increase size */
+  font-size: 1.8rem; /* Larger font */
+  text-transform: uppercase;
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.glitch-button:hover {
+  background-color: purple;
+  color: white;
+}
+
+/* Create glitch layers */
+.glitch-button::before,
+.glitch-button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: inherit;
+  z-index: -1;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 20%,
+    0 20%,
+    0 0,
+    100% 0,
+    100% 80%,
+    0 80%
+  );
+  transition: all 0.2s ease;
+}
+
+.glitch-button:hover::before {
+  transform: translate(-5px, -5px);
+  background-color: rgba(255, 0, 255, 0.5);
+}
+
+.glitch-button:hover::after {
+  transform: translate(5px, 5px);
+  background-color: rgba(0, 255, 255, 0.5);
+}
+
+/* Add subtle shake effect */
+.glitch-button:hover {
+  animation: shake 0.2s infinite;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(1px, 1px);
+  }
+  50% {
+    transform: translate(-1px, -1px);
+  }
+  100% {
+    transform: translate(1px, -1px);
+  }
+}

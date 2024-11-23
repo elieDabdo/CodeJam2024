@@ -12,18 +12,13 @@ import gameControl from "../../assets/game-control.gif";
 import CapturePhoto from "./CapturePhoto";
 import { useNavigate } from "react-router-dom";
 
+import "./home.scss";
+
 function Home() {
   const navigate = useNavigate();
 
-  const handleFileChange = (file) => {
-    console.log("Selected file:", file);
-    const vidURL = URL.createObjectURL(file);
-    navigate("/game", { state: { video: vidURL } });
-  };
-
-  const handleCapture = (croppedFace) => {
-    console.log("Cropped face image:", croppedFace); // Logs the cropped PNG data URL
-    navigate("/game", { state: { croppedFace } }); // Pass to the /game route
+  const handlePlayGame = () => {
+    navigate("/game"); // Redirect to the game route
   };
 
   return (
@@ -36,12 +31,6 @@ function Home() {
           <Container className="home-content">
             <Row>
               <Col md={7} className="home-header">
-                {/* <h1 style={{ paddingBottom: 15 }} className="heading">
-                     Hello there!{" "}
-                     <span className="wave" role="img" aria-labelledby="wave">
-                       👋🏻
-                     </span>
-                   </h1> */}
                 <h1 className="heading-name">Welcome to</h1>
                 <h1>
                   <strong className="main-name"> Cambat</strong>
@@ -63,11 +52,21 @@ function Home() {
             </Row>
           </Container>
         </Container>
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: "4rem",
+          }}
+        >
+          <Button className="glitch-button" onClick={() => navigate("/game")}>
+            Play Game
+          </Button>
+        </div>
       </section>
       <div
         style={{ padding: "20px", marginBottom: "100px", textAlign: "center" }}
       >
-        <p style={{ color: "white" }}>Snap a photo to join the battle!</p>
+        <p style={{ color: "white" }}>Or snap a photo to join the battle!</p>
         <CapturePhoto />
       </div>
       <Footer />

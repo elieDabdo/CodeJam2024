@@ -14,7 +14,7 @@ const Game = () => {
   const [drawVidSkelOnVideo, setDrawVidSkelOnVid] = useState(true);
   const location = useLocation();
   console.log("Selected file:", location);
-  const video = location.state.video;
+  const video = location.state?.video;
 
   return (
     <>
