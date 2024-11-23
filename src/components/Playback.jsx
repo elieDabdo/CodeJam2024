@@ -12,7 +12,7 @@ const Playback = () => {
       loaderUrl: "unityBuild/Build/unityBuild.loader.js",
       dataUrl: "unityBuild/Build/unityBuild.data",
       frameworkUrl: "unityBuild/Build/unityBuild.framework.js",
-      codeUrl: "unityBuild/Build/build.wasm",
+      codeUrl: "unityBuild/Build/unityBuild.wasm",
     });
 
   const loadingPercentage = Math.round(loadingProgression * 100);
