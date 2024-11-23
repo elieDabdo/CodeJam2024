@@ -67,7 +67,9 @@ const Playback = () => {
       video.autoplay = true;
 
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
         video.srcObject = stream;
 
         video.onloadedmetadata = () => {
@@ -92,14 +94,20 @@ const Playback = () => {
       if (results.poseLandmarks) {
         // Draw lines between key pose landmarks (for skeleton)
         const connections = [
-          [11, 13], [13, 15], // Left arm
-          [12, 14], [14, 16], // Right arm
+          [11, 13],
+          [13, 15], // Left arm
+          [12, 14],
+          [14, 16], // Right arm
           [11, 12], // Shoulders
-          [23, 25], [25, 27], // Left leg
-          [24, 26], [26, 28], // Right leg
+          [23, 25],
+          [25, 27], // Left leg
+          [24, 26],
+          [26, 28], // Right leg
           [23, 24], // Hips
-          [27, 29], [28, 30], // Left leg to feet
-          [29, 31], [30, 32], // Right leg to feet
+          [27, 29],
+          [28, 30], // Left leg to feet
+          [29, 31],
+          [30, 32], // Right leg to feet
         ];
 
         // Draw the lines
@@ -158,9 +166,74 @@ const Playback = () => {
   }, [sendMessage]);
 
   return (
-    <div style={{ display: "flex", width: "100%", height: "100vh" }}>
-      {/* Webcam Feed and Pose Overlay */}
-      <div style={{ position: "relative", width: "50%", height: "100%" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100vw",
+        height: "100vh",
+        position: "relative",
+        backgroundColor: "#f0f0f0", // Optional background for visibility
+      }}
+    >
+      {/* Unity Game - Centered */}
+      <div
+        style={{
+          width: "80vw", // Adjust size to make it prominent
+          height: "80vh",
+        }}
+      >
+        {isLoaded === false && (
+          <div
+            className="loading-overlay"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              zIndex: 3,
+              color: "white",
+            }}
+          >
+            <p>Loading... ({loadingPercentage}%)</p>
+          </div>
+        )}
+        <Unity
+          className="unity"
+          unityProvider={unityProvider}
+          style={{
+            width: "100%",
+            height: "100%",
+            border: "2px solid #ccc", // Optional border
+            borderRadius: "8px", // Optional rounded corners
+          }}
+        />
+      </div>
+
+      {/* Video Feed and Pose Overlay - Bottom Left */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "10px",
+          left: "10px",
+          width: "300px", // Set a fixed size for the video feed
+          height: "200px",
+          zIndex: 3,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#000", // Optional background for better visibility
+          borderRadius: "8px",
+          overflow: "hidden",
+        }}
+      >
         <video
           ref={webcamVideoRef}
           style={{
@@ -183,51 +256,6 @@ const Playback = () => {
           }}
         />
       </div>
-
-      {/* Unity Game */}
-      {/* Unity Game */}
-<div
-  style={{
-    width: "50%",
-    height: "100%",
-    position: "relative", // Ensure it respects its parent stacking context
-    zIndex: 2, // Higher z-index to bring it forward
-  }}
->
-  {isLoaded === false && (
-    <div
-      className="loading-overlay"
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        zIndex: 3, // Overlay above Unity game while loading
-        color: "white",
-      }}
-    >
-      <p>Loading... ({loadingPercentage}%)</p>
-    </div>
-  )}
-  <Unity
-    className="unity"
-    unityProvider={unityProvider}
-    style={{
-      width: "100%",
-      height: "100%",
-      position: "absolute", // Fill parent container
-      top: 0,
-      left: 0,
-      zIndex: 2, // Unity content in the foreground
-    }}
-  />
-</div>
-
     </div>
   );
 };
