@@ -29,8 +29,8 @@ const Game = () => {
                   {
                     training_video_maximized:trainingVideoMaximized,
                     draw_webcam_skeleton_on_webcam:drawCamSkelOnCam,
-                    draw_webcam_skeleton_on_training:drawCamSkelOnVideo,
-                    draw_training_skeleton_on_training:drawVidSkelOnCam,
+                    // draw_webcam_skeleton_on_training:drawCamSkelOnVideo,
+                    // draw_training_skeleton_on_training:drawVidSkelOnCam,
                     draw_training_skeleton_on_webcam:drawVidSkelOnVideo
                   }}
                   style={{ gridColumn: '1' }} />
