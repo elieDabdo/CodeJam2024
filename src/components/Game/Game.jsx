@@ -21,7 +21,7 @@ const Game = () => {
       <div className="game-container">
         <Navbar />
         <ScrollToTop />
-        <div style={{ display: "grid", gridTemplateColumns: "8fr 2fr" }}>
+        <div>
           <Playback
             video_url={video}
             user_params={{
