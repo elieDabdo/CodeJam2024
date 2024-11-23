@@ -204,6 +204,16 @@ const Playback = () => {
             <p>Loading... ({loadingPercentage}%)</p>
           </div>
         )}
+        {/* <Unity
+          className="unity"
+          unityProvider={unityProvider}
+          style={{
+            width: "100%",
+            height: "100%",
+            border: "2px solid #ccc", // Optional border
+            borderRadius: "8px", // Optional rounded corners
+          }}
+        /> */}
         <Unity
           className="unity"
           unityProvider={unityProvider}
@@ -212,6 +222,7 @@ const Playback = () => {
             height: "100%",
             border: "2px solid #ccc", // Optional border
             borderRadius: "8px", // Optional rounded corners
+            filter: "saturate(1.8)", // Adjusted filter
           }}
         />
       </div>

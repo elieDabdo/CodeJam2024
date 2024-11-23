@@ -36,10 +36,9 @@ function Home() {
                     👋🏻
                   </span>
                 </h1> */}
-
-                <h1 className="heading-name">
-                  Welcome to
-                  <strong className="main-name"> Cambat </strong>
+                <h1 className="heading-name">Welcome to</h1>
+                <h1>
+                  <strong className="main-name"> Cambat</strong>
                 </h1>
 
                 <div style={{ padding: 50, textAlign: "left" }}>
@@ -56,7 +55,7 @@ function Home() {
                 />
               </Col>
             </Row>
-            <Row>
+            {/* <Row>
               <div
                 style={{
                   display: "flex",
@@ -67,11 +66,11 @@ function Home() {
                 }}
               >
                 <h1 style={{ fontSize: "24px", marginBottom: "20px" }}>
-                  Upload your MP4 video here to start training
+                  Upload your photo here to start the battle
                 </h1>
                 <FileUpload onFileChange={handleFileChange} />
               </div>
-            </Row>
+            </Row> */}
           </Container>
         </Container>
       </section>
