@@ -278,10 +278,15 @@ button:focus {
 .heading-name {
   font-size: 2.5em !important;
   padding-left: 45px !important;
+  font-family: "Press Start 2P", sans-serif;
+  padding-bottom: 2.5rem;
 }
 
 .main-name {
   color: #cd5ff8;
+  font-size: 2em;
+  font-family: "Press Start 2P", sans-serif;
+  padding-left: 45px;
 }
 
 .Typewriter__wrapper {

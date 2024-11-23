@@ -11,7 +11,7 @@ function Type() {
           "Let your anger out",
           "Gaming made easy",
           "Fight without the fuss",
-          "Rage out",
+          "Rage on",
         ],
         autoStart: true,
         loop: true,
