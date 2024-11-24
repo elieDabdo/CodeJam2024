@@ -4,11 +4,13 @@ import Playback from "../Playback";
 import Navbar from "../Navbar";
 import ScrollToTop from "../ScrollToTop";
 import "./Game.css";
+import { useNavigate } from "react-router-dom";
 
 const Game = () => {
   const [showNavbar, setShowNavbar] = useState(false); // Initially hidden
   const [lastScrollY, setLastScrollY] = useState(0);
   const reactLocation = useLocation();
+  const navigate = useNavigate(); // Hook for navigation
 
   const controlNavbar = () => {
     if (window.scrollY === 0) {
@@ -38,6 +40,13 @@ const Game = () => {
           user_params={{ training_video_maximized: true }}
         />
       </section>
+      {/* Back button */}
+      <button
+        className="back-button"
+        onClick={() => navigate("/")} // Navigate back to home
+      >
+        Back to Home
+      </button>
     </div>
   );
 };

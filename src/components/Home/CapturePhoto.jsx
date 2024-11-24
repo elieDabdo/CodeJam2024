@@ -1,105 +1,3 @@
-// import React, { useRef, useState } from "react";
-// import Webcam from "react-webcam";
-// import Button from "react-bootstrap/Button";
-
-// function CapturePhoto() {
-//   const webcamRef = useRef(null);
-//   const [capturedImage, setCapturedImage] = useState(null);
-
-//   // Capture photo from webcam
-//   const captureImage = () => {
-//     if (webcamRef.current) {
-//       const imageSrc = webcamRef.current.getScreenshot();
-//       setCapturedImage(imageSrc); // Save the captured photo
-//     }
-//   };
-
-//   // Handle "Choose Photo" button
-//   const handleChoosePhoto = () => {
-//     if (capturedImage) {
-//       console.log("Captured Photo:", capturedImage);
-//     } else {
-//       console.log("No photo captured yet.");
-//     }
-//   };
-
-//   return (
-//     <div
-//       style={{
-//         display: "flex",
-//         flexDirection: "column",
-//         alignItems: "center",
-//         gap: "10px",
-//       }}
-//     >
-//       {!capturedImage && (
-//         <>
-//           <div
-//             style={{
-//               position: "relative",
-//               width: "500px",
-//               height: "500px", // Make it square
-//               overflow: "hidden",
-//               borderRadius: "10px",
-//             }}
-//           >
-//             <Webcam
-//               audio={false}
-//               ref={webcamRef}
-//               screenshotFormat="image/jpeg"
-//               videoConstraints={{
-//                 width: 500,
-//                 height: 500,
-//               }}
-//               style={{
-//                 position: "absolute",
-//                 top: 0,
-//                 left: 0,
-//                 width: "100%",
-//                 height: "100%",
-//                 objectFit: "cover",
-//                 transform: "scaleX(-1)", // Mirror the webcam
-//               }}
-//             />
-//           </div>
-//           <Button variant="primary" onClick={captureImage}>
-//             Capture Photo
-//           </Button>
-//         </>
-//       )}
-
-//       {capturedImage && (
-//         <>
-//           <h4>Selected Image:</h4>
-//           <img
-//             src={capturedImage}
-//             alt="Selected"
-//             style={{
-//               width: "100%",
-//               maxWidth: "500px",
-//               marginBottom: "10px",
-//               transform: "scaleX(-1)", // Mirror the captured image
-//             }}
-//           />
-//           <div
-//             style={{ display: "flex", justifyContent: "center", gap: "10px" }}
-//           >
-//             <Button variant="secondary" onClick={() => setCapturedImage(null)}>
-//               Retake Photo
-//             </Button>
-//             <Button
-//               variant="info"
-//               onClick={handleChoosePhoto} // Print the photo to the console
-//             >
-//               Choose Photo
-//             </Button>
-//           </div>
-//         </>
-//       )}
-//     </div>
-//   );
-// }
-
 // export default CapturePhoto;
 import React, { useRef, useState } from "react";
 import Webcam from "react-webcam";
@@ -133,13 +31,39 @@ function CaptureOrUploadPhoto() {
     }
   };
 
-  // Choose the photo (print to console)
-  const handleChoosePhoto = () => {
+  const encodeToBase64 = (image) => {
+    return new Promise((resolve, reject) => {
+      // Check if the image is already a Base64 string
+      if (typeof image === "string" && image.startsWith("data:image")) {
+        resolve(image); // Already Base64 encoded
+      } else if (image instanceof File) {
+        // Handle File objects (e.g., uploaded images)
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result); // Base64 string
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(image); // Read file as Base64
+      } else {
+        reject(new Error("Unsupported image format."));
+      }
+    });
+  };
+
+  // Choose the photo (save as JSON string to localStorage)
+  const handleChoosePhoto = async () => {
     const selectedImage = capturedImage || uploadedImage;
-    if (selectedImage) {
-      console.log("Chosen Photo:", selectedImage);
-    } else {
-      console.log("No photo selected.");
+
+    try {
+      const base64Image = await encodeToBase64(selectedImage);
+
+      // Save to localStorage as a JSON string
+      const imageData = {
+        image: base64Image, // Base64 encoded string
+        timestamp: new Date().toISOString(), // Optional metadata
+      };
+      localStorage.setItem("selectedImage", JSON.stringify(imageData));
+      console.log("Selected image saved as Base64:", imageData);
+    } catch (error) {
+      console.error("Failed to encode image to Base64:", error);
     }
   };
 

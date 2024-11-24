@@ -74,7 +74,7 @@ function Home() {
       <div className="bottom-footer">
         <p>
           Designed and Developed by Elie Abdo, Rudi Kischer and Danielle
-          Wahrhaftig. Copyright © 2024
+          Wahrhaftig, and Ben Hepditch. Copyright © 2024
         </p>
       </div>
     </div>

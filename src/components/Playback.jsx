@@ -170,6 +170,30 @@ const Playback = () => {
       // console.log("Pose data sent to Unity:", poseLandmarks);
     };
 
+    // Retrieve the JSON string from localStorage
+    const storedImageData = localStorage.getItem("selectedImage");
+
+    if (storedImageData) {
+      // Parse the JSON string back to an object
+      const imageData = JSON.parse(storedImageData);
+      console.log("Retrieved Image Data:", imageData);
+
+      // Access the image (Base64 string) and metadata
+      const base64Image = imageData.image;
+      const timestamp = imageData.timestamp;
+
+      // Pass the image data to Unity (example)
+      if (base64Image) {
+        sendMessage(
+          "ImageReceiver", // Unity GameObject name
+          "SetTexture", // Unity method to call
+          base64Image // Send the Base64 image string
+        );
+      }
+    } else {
+      console.warn("No image data found in localStorage.");
+    }
+
     initializePose();
     startWebcam();
 
