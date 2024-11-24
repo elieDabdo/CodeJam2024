@@ -9,10 +9,10 @@ const Playback = () => {
   // Unity context setup
   const { unityProvider, isLoaded, loadingProgression, sendMessage } =
     useUnityContext({
-      loaderUrl: "unityBuild/Build/unityBuild.loader.js",
-      dataUrl: "unityBuild/Build/unityBuild.data",
-      frameworkUrl: "unityBuild/Build/unityBuild.framework.js",
-      codeUrl: "unityBuild/Build/unityBuild.wasm",
+      loaderUrl: "/CodeJam2024/unityBuild/Build/unityBuild.loader.js",
+      dataUrl: "/CodeJam2024/unityBuild/Build/unityBuild.data",
+      frameworkUrl: "/CodeJam2024/unityBuild/Build/unityBuild.framework.js",
+      codeUrl: "/CodeJam2024/unityBuild/Build/unityBuild.wasm",
     });
 
   const loadingPercentage = Math.round(loadingProgression * 100);

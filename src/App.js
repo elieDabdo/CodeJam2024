@@ -34,10 +34,10 @@ function App() {
       <div className="App" id={load ? "no-scroll" : "scroll"}>
         <RisingParticles />
         <Routes>
-          <Route path="/CodeJam" element={<Home />} />
+          <Route path="/Cambat" element={<Home />} />
           <Route path="/presets" element={<Projects />} />
           <Route path="*" element={<Navigate to="/CodeJam" />} />
-          <Route exact path="/game" element={<Game />} />
+          <Route exact path="/Game" element={<Game />} />
         </Routes>
       </div>
     </Router>
