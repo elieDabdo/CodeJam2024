@@ -35,11 +35,20 @@ function CaptureOrUploadPhoto() {
     return new Promise((resolve, reject) => {
       // Check if the image is already a Base64 string
       if (typeof image === "string" && image.startsWith("data:image")) {
-        resolve(image); // Already Base64 encoded
+        // Remove the prefix using a regex and resolve
+        const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
+        resolve(base64Data);
       } else if (image instanceof File) {
         // Handle File objects (e.g., uploaded images)
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result); // Base64 string
+        reader.onload = () => {
+          // Remove the prefix from the Base64 string
+          const base64Data = reader.result.replace(
+            /^data:image\/\w+;base64,/,
+            ""
+          );
+          resolve(base64Data);
+        };
         reader.onerror = (error) => reject(error);
         reader.readAsDataURL(image); // Read file as Base64
       } else {
