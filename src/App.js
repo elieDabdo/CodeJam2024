@@ -34,7 +34,7 @@ function App() {
       <div className="App" id={load ? "no-scroll" : "scroll"}>
         <RisingParticles />
         <Routes>
-          <Route path="/Cambat" element={<Home />} />
+          <Route path="/Cambat2024" element={<Home />} />
           <Route path="/presets" element={<Projects />} />
           <Route path="*" element={<Navigate to="/Cambat2024" />} />
           <Route exact path="/game" element={<Game />} />
