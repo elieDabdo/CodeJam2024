@@ -36,7 +36,7 @@ function App() {
         <Routes>
           <Route path="/Cambat" element={<Home />} />
           <Route path="/presets" element={<Projects />} />
-          <Route path="*" element={<Navigate to="/Cambat" />} />
+          <Route path="*" element={<Navigate to="/Cambat2024" />} />
           <Route exact path="/game" element={<Game />} />
         </Routes>
       </div>
