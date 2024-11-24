@@ -17,60 +17,67 @@ import "./home.scss";
 function Home() {
   const navigate = useNavigate();
 
-  const handlePlayGame = () => {
-    navigate("/game"); // Redirect to the game route
-  };
-
   return (
-    <>
-      <Navbar />
-      <ScrollToTop />
-      <section>
-        <Container fluid className="home-section" id="home">
-          <Particle />
-          <Container className="home-content">
-            <Row>
-              <Col md={7} className="home-header">
-                <h1 className="heading-name">Welcome to</h1>
-                <h1>
-                  <strong className="main-name"> Cambat</strong>
-                </h1>
+    <div className="page-container">
+      <div className="content-wrap">
+        <Navbar />
+        <ScrollToTop />
+        <section>
+          <Container fluid className="home-section" id="home">
+            <Particle />
+            <Container className="home-content">
+              <Row>
+                <Col md={7} className="home-header">
+                  <h1 className="heading-name">Welcome to</h1>
+                  <h1>
+                    <strong className="main-name"> Cambat</strong>
+                  </h1>
 
-                <div style={{ padding: 50, textAlign: "left" }}>
-                  <Type />
-                </div>
-              </Col>
+                  <div style={{ padding: 50, textAlign: "left" }}>
+                    <Type />
+                  </div>
+                </Col>
 
-              <Col md={5} style={{ paddingBottom: 20 }}>
-                <img
-                  src={gameControl}
-                  alt="home pic"
-                  className="img-fluid"
-                  style={{ maxHeight: "450px" }}
-                />
-              </Col>
-            </Row>
+                <Col md={5} style={{ paddingBottom: 20 }}>
+                  <img
+                    src={gameControl}
+                    alt="home pic"
+                    className="img-fluid"
+                    style={{ maxHeight: "450px" }}
+                  />
+                </Col>
+              </Row>
+            </Container>
           </Container>
-        </Container>
+          <div
+            style={{
+              textAlign: "center",
+              marginBottom: "4rem",
+            }}
+          >
+            <Button className="glitch-button" onClick={() => navigate("/game")}>
+              Play Game
+            </Button>
+          </div>
+        </section>
         <div
           style={{
+            padding: "20px",
+            marginBottom: "100px",
             textAlign: "center",
-            marginBottom: "4rem",
           }}
         >
-          <Button className="glitch-button" onClick={() => navigate("/game")}>
-            Play Game
-          </Button>
+          <p style={{ color: "white" }}>Or snap a photo to join the battle!</p>
+          <CapturePhoto />
         </div>
-      </section>
-      <div
-        style={{ padding: "20px", marginBottom: "100px", textAlign: "center" }}
-      >
-        <p style={{ color: "white" }}>Or snap a photo to join the battle!</p>
-        <CapturePhoto />
       </div>
-      <Footer />
-    </>
+      <div className="bottom-footer">
+        <p>
+          Designed and Developed by Elie Abdo, Rudi Kischer and Danielle
+          Wahrhaftig. Copyright © 2024
+        </p>
+      </div>
+    </div>
   );
 }
 

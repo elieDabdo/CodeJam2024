@@ -67,3 +67,19 @@
     transform: translate(1px, -1px);
   }
 }
+
+.bottom-footer {
+  background-color: black; /* Footer background */
+  color: white; /* Footer text color */
+  min-height: 3rem; /* Minimum height for the footer */
+  display: flex; /* Enable flexbox */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  text-align: center; /* Center text alignment for multiline content */
+  margin: 0; /* Remove any unexpected margins */
+  padding: 0; /* Remove any unexpected padding */
+}
+
+.bottom-footer p {
+  margin: 0; /* Remove default paragraph margins */
+}
