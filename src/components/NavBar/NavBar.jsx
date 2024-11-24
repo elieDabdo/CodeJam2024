@@ -8,7 +8,7 @@ const NavBar = () => {
         <nav className="navbar">
             <div className="nav-main">
                 <div className="name">
-                    <Link to="/Codejam"><h2>My Trainer</h2></Link>
+                    <Link to="/Cambat"><h2>My Trainer</h2></Link>
                 </div>
             </div>
         </nav>

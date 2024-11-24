@@ -36,8 +36,8 @@ function App() {
         <Routes>
           <Route path="/Cambat" element={<Home />} />
           <Route path="/presets" element={<Projects />} />
-          <Route path="*" element={<Navigate to="/CodeJam" />} />
-          <Route exact path="/Game" element={<Game />} />
+          <Route path="*" element={<Navigate to="/Cambat" />} />
+          <Route exact path="/game" element={<Game />} />
         </Routes>
       </div>
     </Router>
