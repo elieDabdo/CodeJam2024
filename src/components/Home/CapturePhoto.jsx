@@ -159,7 +159,7 @@ function CaptureOrUploadPhoto() {
               Retake Photo
             </Button>
             <Button variant="info" onClick={handleChoosePhoto}>
-              Choose Photo
+              Choose Photo and Play
             </Button>
           </div>
         </>
