@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/CodeJam2024/static/css/main.42b6d4f8.css",
-    "main.js": "/CodeJam2024/static/js/main.5d3ecd53.js",
+    "main.js": "/CodeJam2024/static/js/main.aff42827.js",
     "static/js/787.9dc40cd0.chunk.js": "/CodeJam2024/static/js/787.9dc40cd0.chunk.js",
     "static/media/stretching.mp4": "/CodeJam2024/static/media/stretching.5e9bb1426b71d5c60672.mp4",
     "static/media/tai_chi.mp4": "/CodeJam2024/static/media/tai_chi.5755f8460fbde6843fed.mp4",
@@ -15,11 +15,11 @@
     "static/media/pre.svg": "/CodeJam2024/static/media/pre.4410c5baaa673cc131da.svg",
     "index.html": "/CodeJam2024/index.html",
     "main.42b6d4f8.css.map": "/CodeJam2024/static/css/main.42b6d4f8.css.map",
-    "main.5d3ecd53.js.map": "/CodeJam2024/static/js/main.5d3ecd53.js.map",
+    "main.aff42827.js.map": "/CodeJam2024/static/js/main.aff42827.js.map",
     "787.9dc40cd0.chunk.js.map": "/CodeJam2024/static/js/787.9dc40cd0.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.42b6d4f8.css",
-    "static/js/main.5d3ecd53.js"
+    "static/js/main.aff42827.js"
   ]
 }
