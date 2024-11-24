@@ -1,12 +1,17 @@
-// export default CapturePhoto;
 import React, { useRef, useState } from "react";
 import Webcam from "react-webcam";
 import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert"; // Import Alert from react-bootstrap
 
 function CaptureOrUploadPhoto() {
   const webcamRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
   const [uploadedImage, setUploadedImage] = useState(null);
+  const [confirmationMessage, setConfirmationMessage] = useState(null); // State for success messages
+  const [errorMessage, setErrorMessage] = useState(null); // State for error messages
+
+  // Path to the existing image in the public folder
+  const existingImagePath = process.env.PUBLIC_URL + "/SmallGuyTexture.png"; // Replace with your image filename
 
   // Capture photo from webcam
   const captureImage = () => {
@@ -14,6 +19,8 @@ function CaptureOrUploadPhoto() {
       const imageSrc = webcamRef.current.getScreenshot();
       setCapturedImage(imageSrc); // Save the captured photo
       setUploadedImage(null); // Clear uploaded image
+      setConfirmationMessage(null); // Clear any previous messages
+      setErrorMessage(null); // Clear any previous errors
     }
   };
 
@@ -26,11 +33,96 @@ function CaptureOrUploadPhoto() {
         const imageSrc = e.target.result;
         setUploadedImage(imageSrc); // Save the uploaded image
         setCapturedImage(null); // Clear captured image
+        setConfirmationMessage(null); // Clear any previous messages
+        setErrorMessage(null); // Clear any previous errors
       };
       reader.readAsDataURL(file);
     }
   };
 
+  // Function to combine images using Canvas
+  const combineImages = async () => {
+    const selectedImage = capturedImage || uploadedImage;
+    if (!selectedImage) {
+      setErrorMessage("No image selected to combine.");
+      return;
+    }
+
+    try {
+      // Load existing image
+      const existingImg = await loadImage(existingImagePath);
+
+      // Load captured or uploaded image
+      const selectedImg = await loadImage(selectedImage);
+
+      // Create a canvas with the dimensions of the existing image
+      const canvas = document.createElement("canvas");
+      canvas.width = existingImg.width;
+      canvas.height = existingImg.height;
+      const ctx = canvas.getContext("2d");
+
+      // Draw the existing image as the background
+      ctx.drawImage(existingImg, 0, 0, canvas.width, canvas.height);
+
+      // Position the captured/uploaded image at specific coordinates with specific size
+      // In this case: x = 10, y = 112, width = 400, height = 400
+      ctx.drawImage(selectedImg, 10, 112, 400, 400);
+
+      // Convert the canvas to a data URL
+      const combinedDataUrl = canvas.toDataURL("image/jpeg");
+
+      // Now, use the combinedDataUrl as needed (e.g., send to server)
+      // For this example, we'll save it to localStorage
+      await saveCombinedImage(combinedDataUrl);
+
+      console.log("Images combined and saved successfully.");
+      setConfirmationMessage("Photo has been chosen successfully."); // Set success message
+
+      // Optionally, clear the message after 3 seconds
+      setTimeout(() => {
+        setConfirmationMessage(null);
+      }, 3000);
+    } catch (error) {
+      console.error("Error combining images:", error);
+      setErrorMessage("Failed to combine and save the photo."); // Set error message
+
+      // Optionally, clear the error message after 3 seconds
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000);
+    }
+  };
+
+  // Helper function to load an image and return a Promise
+  const loadImage = (src) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous"; // To avoid CORS issues
+      img.onload = () => resolve(img);
+      img.onerror = (err) => reject(err);
+      img.src = src;
+    });
+  };
+
+  // Function to save the combined image to localStorage
+  const saveCombinedImage = async (combinedDataUrl) => {
+    try {
+      const base64Image = await encodeToBase64(combinedDataUrl);
+
+      // Save to localStorage as a JSON string
+      const imageData = {
+        image: base64Image, // Base64 encoded string
+        timestamp: new Date().toISOString(), // Optional metadata
+      };
+      localStorage.setItem("selectedImage", JSON.stringify(imageData));
+      console.log("Combined image saved as Base64:", imageData);
+    } catch (error) {
+      console.error("Failed to encode and save combined image:", error);
+      throw error; // Propagate the error to be handled in combineImages
+    }
+  };
+
+  // Existing encodeToBase64 function
   const encodeToBase64 = (image) => {
     return new Promise((resolve, reject) => {
       // Check if the image is already a Base64 string
@@ -57,23 +149,11 @@ function CaptureOrUploadPhoto() {
     });
   };
 
-  // Choose the photo (save as JSON string to localStorage)
+  // Handle choosing the photo (which now combines and saves the image)
   const handleChoosePhoto = async () => {
-    const selectedImage = capturedImage || uploadedImage;
-
-    try {
-      const base64Image = await encodeToBase64(selectedImage);
-
-      // Save to localStorage as a JSON string
-      const imageData = {
-        image: base64Image, // Base64 encoded string
-        timestamp: new Date().toISOString(), // Optional metadata
-      };
-      localStorage.setItem("selectedImage", JSON.stringify(imageData));
-      console.log("Selected image saved as Base64:", imageData);
-    } catch (error) {
-      console.error("Failed to encode image to Base64:", error);
-    }
+    await combineImages();
+    // Optionally, perform additional actions after saving
+    // For example, navigate to another page or trigger playback
   };
 
   return (
@@ -154,16 +234,26 @@ function CaptureOrUploadPhoto() {
               onClick={() => {
                 setCapturedImage(null);
                 setUploadedImage(null);
+                setConfirmationMessage(null);
+                setErrorMessage(null);
               }}
             >
               Retake Photo
             </Button>
             <Button variant="info" onClick={handleChoosePhoto}>
-              Choose Photo and Play
+              Choose Image
             </Button>
           </div>
         </>
       )}
+
+      {/* Display Confirmation and Error Messages */}
+      <div style={{ marginTop: "20px", width: "100%", maxWidth: "500px" }}>
+        {confirmationMessage && (
+          <Alert variant="success">{confirmationMessage}</Alert>
+        )}
+        {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+      </div>
     </div>
   );
 }
