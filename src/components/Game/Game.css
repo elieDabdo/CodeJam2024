@@ -1,6 +1,30 @@
 .game-container {
   display: flex;
   flex-direction: column;
+  /* justify-content: center; */
+  min-height: 100vh;
+  padding-bottom: 150px;
+  background-image: url("/src/assets/home-bg.jpg"); /* Path from the public folder */
+  background-size: cover; /* Ensures the image covers the entire container */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents tiling */
+  background-attachment: fixed;
+}
+
+.game-section {
+  display: flex;
+  align-items: center;
   justify-content: center;
-  height: 100vh;
+  width: 80%; /* Adjust width as needed */
+  max-width: 800px; /* Limits how wide the section can get */
+  margin: 0 auto;
+  position: relative;
+}
+
+.hidden {
+  display: none;
+}
+
+.show {
+  display: block;
 }

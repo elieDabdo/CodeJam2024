@@ -98,11 +98,11 @@ const Playback = () => {
         webcamCanvasRef.current.width,
         webcamCanvasRef.current.height
       );
-    
+
       // Draw vertical dividing lines
       const canvasWidth = webcamCanvasRef.current.width;
       const canvasHeight = webcamCanvasRef.current.height;
-    
+
       // First line at 1/3 of the width
       canvasCtx.beginPath();
       canvasCtx.moveTo(canvasWidth / 3, 0);
@@ -110,7 +110,7 @@ const Playback = () => {
       canvasCtx.strokeStyle = "blue"; // Line color
       canvasCtx.lineWidth = 2; // Line thickness
       canvasCtx.stroke();
-    
+
       // Second line at 2/3 of the width
       canvasCtx.beginPath();
       canvasCtx.moveTo((2 * canvasWidth) / 3, 0);
@@ -118,7 +118,7 @@ const Playback = () => {
       canvasCtx.strokeStyle = "blue";
       canvasCtx.lineWidth = 2;
       canvasCtx.stroke();
-    
+
       // Draw the pose landmarks and connections if available
       if (results.poseLandmarks) {
         const connections = [
@@ -137,42 +137,29 @@ const Playback = () => {
           [29, 31],
           [30, 32], // Right leg to feet
         ];
-    
+
         // Draw the connections
         connections.forEach(([startIdx, endIdx]) => {
           const start = results.poseLandmarks[startIdx];
           const end = results.poseLandmarks[endIdx];
           canvasCtx.beginPath();
-          canvasCtx.moveTo(
-            start.x * canvasWidth,
-            start.y * canvasHeight
-          );
-          canvasCtx.lineTo(
-            end.x * canvasWidth,
-            end.y * canvasHeight
-          );
+          canvasCtx.moveTo(start.x * canvasWidth, start.y * canvasHeight);
+          canvasCtx.lineTo(end.x * canvasWidth, end.y * canvasHeight);
           canvasCtx.strokeStyle = "red";
           canvasCtx.lineWidth = 2;
           canvasCtx.stroke();
         });
-    
+
         // Draw landmarks
         results.poseLandmarks.forEach((landmark) => {
           const { x, y } = landmark;
           canvasCtx.beginPath();
-          canvasCtx.arc(
-            x * canvasWidth,
-            y * canvasHeight,
-            5,
-            0,
-            2 * Math.PI
-          );
+          canvasCtx.arc(x * canvasWidth, y * canvasHeight, 5, 0, 2 * Math.PI);
           canvasCtx.fillStyle = "red";
           canvasCtx.fill();
         });
       }
     };
-    
 
     const sendPoseToUnity = (poseLandmarks) => {
       sendMessage(
@@ -203,7 +190,7 @@ const Playback = () => {
         width: "100vw",
         height: "100vh",
         position: "relative",
-        backgroundColor: "#f0f0f0", // Optional background for visibility
+        paddingBottom: 10,
       }}
     >
       {/* Unity Game - Centered */}

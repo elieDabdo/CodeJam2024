@@ -7,7 +7,7 @@ function Type() {
       options={{
         strings: [
           "Innovating the accessible gaming industry.",
-          "Bringing you a healthy way to de-stress",
+          "Bringing you a safe way to de-stress",
           "Let your anger out",
           "Gaming made easy",
           "Fight without the fuss",
