@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/CodeJam2024/static/css/main.42b6d4f8.css",
+    "main.js": "/CodeJam2024/static/js/main.525d782c.js",
+    "static/js/787.9dc40cd0.chunk.js": "/CodeJam2024/static/js/787.9dc40cd0.chunk.js",
+    "static/media/stretching.mp4": "/CodeJam2024/static/media/stretching.5e9bb1426b71d5c60672.mp4",
+    "static/media/tai_chi.mp4": "/CodeJam2024/static/media/tai_chi.5755f8460fbde6843fed.mp4",
+    "static/media/yoga.mp4": "/CodeJam2024/static/media/yoga.fdfb3ab933b3a1ab5ea9.mp4",
+    "static/media/dancing.mp4": "/CodeJam2024/static/media/dancing.18c099e0bf7a3fa55dc6.mp4",
+    "static/media/logo-nobg.svg": "/CodeJam2024/static/media/logo-nobg.e26528b1021f135394537a74225bb00f.svg",
+    "static/media/home-main.svg": "/CodeJam2024/static/media/home-main.359935c39288e92d4dba5c9f2445b91d.svg",
+    "static/media/game-control.gif": "/CodeJam2024/static/media/game-control.e071f78c8298bf816762.gif",
+    "static/media/home-bg.jpg": "/CodeJam2024/static/media/home-bg.dc52d5d40a40b13154b0.jpg",
+    "static/media/avatar.svg": "/CodeJam2024/static/media/avatar.7f806e40d46fc76fbc3c4a3d71349951.svg",
+    "static/media/pre.svg": "/CodeJam2024/static/media/pre.4410c5baaa673cc131da.svg",
+    "index.html": "/CodeJam2024/index.html",
+    "main.42b6d4f8.css.map": "/CodeJam2024/static/css/main.42b6d4f8.css.map",
+    "main.525d782c.js.map": "/CodeJam2024/static/js/main.525d782c.js.map",
+    "787.9dc40cd0.chunk.js.map": "/CodeJam2024/static/js/787.9dc40cd0.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.42b6d4f8.css",
+    "static/js/main.525d782c.js"
+  ]
+}
